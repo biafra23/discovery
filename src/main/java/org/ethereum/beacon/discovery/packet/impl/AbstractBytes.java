@@ -7,16 +7,20 @@ import java.util.Objects;
 import org.apache.tuweni.bytes.Bytes;
 import org.ethereum.beacon.discovery.packet.BytesSerializable;
 import org.ethereum.beacon.discovery.util.DecodeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBytes implements BytesSerializable {
 
   private final Bytes bytes;
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractBytes.class);
 
   public static Bytes checkStrictSize(Bytes bytes, int expectedSize) throws DecodeException {
     if (bytes.size() != expectedSize) {
       throw new DecodeException(
-          "Data size (" + bytes.size() + ") doesn't match expected: " + expectedSize);
+          "FORK: Data size (" + bytes.size() + ") doesn't match expected: " + expectedSize);
     }
+    LOG.trace("FORK: This is the forked version of discovery");
     return bytes;
   }
 
