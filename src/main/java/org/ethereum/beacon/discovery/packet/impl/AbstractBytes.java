@@ -20,7 +20,7 @@ public abstract class AbstractBytes implements BytesSerializable {
       throw new DecodeException(
           "FORK: Data size (" + bytes.size() + ") doesn't match expected: " + expectedSize);
     }
-    LOG.trace("FORK: This is the forked version of discovery");
+    LOG.warn("FORK: This is the forked version of discovery");
     return bytes;
   }
 
