@@ -55,6 +55,7 @@ public class IncomingDataPacker implements EnvelopeHandler {
       envelope.put(Field.BAD_PACKET, rawPacketBytes);
       envelope.put(Field.BAD_EXCEPTION, ex);
       LOG.trace("Bad incoming packet {} in envelope #{}", rawPacketBytes, envelope.getIdString());
+      ex.printStackTrace();
     }
     envelope.remove(Field.INCOMING);
   }
