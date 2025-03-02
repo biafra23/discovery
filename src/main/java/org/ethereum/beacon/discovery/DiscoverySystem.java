@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.ethereum.beacon.discovery.scheduler.ExpirationSchedulerFactory;
@@ -17,9 +15,11 @@ import org.ethereum.beacon.discovery.schema.NodeRecord;
 import org.ethereum.beacon.discovery.storage.BucketStats;
 import org.ethereum.beacon.discovery.storage.KBuckets;
 import org.ethereum.beacon.discovery.task.DiscoveryTaskManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DiscoverySystem {
-  private static final Logger LOG = LogManager.getLogger();
+  private static final Logger LOG = LoggerFactory.getLogger(DiscoverySystem.class);
   private final DiscoveryManager discoveryManager;
   private final DiscoveryTaskManager taskManager;
   private final ExpirationSchedulerFactory expirationSchedulerFactory;

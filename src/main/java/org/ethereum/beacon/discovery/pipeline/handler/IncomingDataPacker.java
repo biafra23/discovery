@@ -4,8 +4,6 @@
 
 package org.ethereum.beacon.discovery.pipeline.handler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.ethereum.beacon.discovery.packet.Packet;
 import org.ethereum.beacon.discovery.packet.RawPacket;
@@ -15,10 +13,12 @@ import org.ethereum.beacon.discovery.pipeline.Field;
 import org.ethereum.beacon.discovery.pipeline.HandlerUtil;
 import org.ethereum.beacon.discovery.type.Bytes16;
 import org.ethereum.beacon.discovery.util.DecodeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Handles raw BytesValue incoming data in {@link Field#INCOMING} */
 public class IncomingDataPacker implements EnvelopeHandler {
-  private static final Logger LOG = LogManager.getLogger(IncomingDataPacker.class);
+  private static final Logger LOG = LoggerFactory.getLogger(IncomingDataPacker.class);
   public static final int MAX_PACKET_SIZE = 1280;
   public static final int MIN_PACKET_SIZE = 63;
   private final Bytes16 homeNodeId;
@@ -33,10 +33,7 @@ public class IncomingDataPacker implements EnvelopeHandler {
       return;
     }
     LOG.trace(
-        () ->
-            String.format(
-                "Envelope %s in IncomingDataPacker, requirements are satisfied!",
-                envelope.getIdString()));
+        "Envelope {} in IncomingDataPacker, requirements are satisfied!", envelope.getIdString());
 
     Bytes rawPacketBytes = (Bytes) envelope.get(Field.INCOMING);
     try {
@@ -53,17 +50,11 @@ public class IncomingDataPacker implements EnvelopeHandler {
 
       envelope.put(Field.PACKET, packet);
       envelope.put(Field.MASKING_IV, rawPacket.getMaskingIV());
-      LOG.trace(
-          () ->
-              String.format("Incoming packet %s in envelope #%s", packet, envelope.getIdString()));
+      LOG.trace("Incoming packet {} in envelope #{}", packet, envelope.getIdString());
     } catch (Exception ex) {
       envelope.put(Field.BAD_PACKET, rawPacketBytes);
       envelope.put(Field.BAD_EXCEPTION, ex);
-      LOG.trace(
-          () ->
-              String.format(
-                  "Bad incoming packet %s in envelope #%s",
-                  rawPacketBytes, envelope.getIdString()));
+      LOG.trace("Bad incoming packet {} in envelope #{}", rawPacketBytes, envelope.getIdString());
     }
     envelope.remove(Field.INCOMING);
   }

@@ -4,8 +4,6 @@
 
 package org.ethereum.beacon.discovery.pipeline.handler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes32;
 import org.ethereum.beacon.discovery.packet.HandshakeMessagePacket;
 import org.ethereum.beacon.discovery.packet.OrdinaryMessagePacket;
@@ -17,11 +15,13 @@ import org.ethereum.beacon.discovery.pipeline.Field;
 import org.ethereum.beacon.discovery.pipeline.HandlerUtil;
 import org.ethereum.beacon.discovery.schema.NodeSession;
 import org.ethereum.beacon.discovery.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Matches the current session state and inbound packet */
 public class PacketDispatcherHandler implements EnvelopeHandler {
 
-  private static final Logger LOG = LogManager.getLogger(PacketDispatcherHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(PacketDispatcherHandler.class);
 
   @Override
   public void handle(Envelope envelope) {
@@ -32,10 +32,8 @@ public class PacketDispatcherHandler implements EnvelopeHandler {
       return;
     }
     LOG.trace(
-        () ->
-            String.format(
-                "Envelope %s in PacketDispatcherHandler, requirements are satisfied!",
-                envelope.getIdString()));
+        "Envelope {} in PacketDispatcherHandler, requirements are satisfied!",
+        envelope.getIdString());
 
     Packet<?> packet = envelope.get(Field.PACKET);
     NodeSession session = envelope.get(Field.SESSION);

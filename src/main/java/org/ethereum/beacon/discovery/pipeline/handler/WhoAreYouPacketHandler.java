@@ -5,8 +5,6 @@
 package org.ethereum.beacon.discovery.pipeline.handler;
 
 import java.util.Optional;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.crypto.SECP256K1.KeyPair;
@@ -29,10 +27,12 @@ import org.ethereum.beacon.discovery.schema.NodeSession.SessionState;
 import org.ethereum.beacon.discovery.type.Bytes12;
 import org.ethereum.beacon.discovery.type.Bytes16;
 import org.ethereum.beacon.discovery.util.Functions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Handles {@link WhoAreYouPacket} in {@link Field#PACKET_WHOAREYOU} field */
 public class WhoAreYouPacketHandler implements EnvelopeHandler {
-  private static final Logger LOG = LogManager.getLogger(WhoAreYouPacketHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WhoAreYouPacketHandler.class);
 
   private final Pipeline outgoingPipeline;
   private final Scheduler scheduler;
@@ -54,10 +54,8 @@ public class WhoAreYouPacketHandler implements EnvelopeHandler {
       throw new IllegalStateException("Internal error: No MASKING_IV field for WhoAreYou packet");
     }
     LOG.trace(
-        () ->
-            String.format(
-                "Envelope %s in WhoAreYouPacketHandler, requirements are satisfied!",
-                envelope.getIdString()));
+        "Envelope {} in WhoAreYouPacketHandler, requirements are satisfied!",
+        envelope.getIdString());
 
     WhoAreYouPacket whoAreYouPacket = envelope.get(Field.PACKET_WHOAREYOU);
     NodeSession session = envelope.get(Field.SESSION);

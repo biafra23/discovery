@@ -17,15 +17,15 @@ import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.ethereum.beacon.discovery.schema.NodeRecord;
 import org.ethereum.beacon.discovery.storage.KBuckets;
 import org.ethereum.beacon.discovery.util.Functions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RecursiveLookupTask {
-  private static final Logger LOG = LogManager.getLogger();
+  private static final Logger LOG = LoggerFactory.getLogger(RecursiveLookupTask.class);
   private static final int MAX_CONCURRENT_QUERIES = 3;
   private final KBuckets buckets;
   private final FindNodesAction sendFindNodesRequest;

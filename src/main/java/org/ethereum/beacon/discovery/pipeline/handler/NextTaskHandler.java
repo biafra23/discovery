@@ -7,8 +7,6 @@ package org.ethereum.beacon.discovery.pipeline.handler;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.ethereum.beacon.discovery.message.V5Message;
 import org.ethereum.beacon.discovery.pipeline.Envelope;
@@ -21,10 +19,12 @@ import org.ethereum.beacon.discovery.scheduler.Scheduler;
 import org.ethereum.beacon.discovery.schema.NodeSession;
 import org.ethereum.beacon.discovery.schema.NodeSession.SessionState;
 import org.ethereum.beacon.discovery.task.TaskStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Gets next request task in session and processes it */
 public class NextTaskHandler implements EnvelopeHandler {
-  private static final Logger LOG = LogManager.getLogger(NextTaskHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(NextTaskHandler.class);
   private static final int DEFAULT_DELAY_MS = 1000;
   private static final int RANDOM_MESSAGE_SIZE = 128;
   private final Pipeline outgoingPipeline;
@@ -51,24 +51,18 @@ public class NextTaskHandler implements EnvelopeHandler {
       return;
     }
     LOG.trace(
-        () ->
-            String.format(
-                "Envelope %s in NextTaskHandler, requirements are satisfied!",
-                envelope.getIdString()));
+        String.format(
+            "Envelope %s in NextTaskHandler, requirements are satisfied!", envelope.getIdString()));
 
     NodeSession session = envelope.get(Field.SESSION);
     Optional<RequestInfo> requestInfoOpt = session.getFirstAwaitRequestInfo();
     if (requestInfoOpt.isEmpty()) {
-      LOG.trace(() -> String.format("Envelope %s: no awaiting requests", envelope.getIdString()));
+      LOG.trace("Envelope {}: no awaiting requests", envelope.getIdString());
       return;
     }
 
     RequestInfo requestInfo = requestInfoOpt.get();
-    LOG.trace(
-        () ->
-            String.format(
-                "Envelope %s: processing awaiting request %s",
-                envelope.getIdString(), requestInfo));
+    LOG.trace("Envelope {}: processing awaiting request {}", envelope.getIdString(), requestInfo);
 
     if (session.getState().equals(SessionState.INITIAL)) {
       session.sendOutgoingRandom(Bytes.random(RANDOM_MESSAGE_SIZE, ThreadLocalRandom.current()));

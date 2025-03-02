@@ -5,8 +5,6 @@
 package org.ethereum.beacon.discovery.pipeline.handler;
 
 import java.util.Optional;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ethereum.beacon.discovery.packet.Packet;
 import org.ethereum.beacon.discovery.packet.WhoAreYouPacket;
 import org.ethereum.beacon.discovery.pipeline.Envelope;
@@ -14,13 +12,15 @@ import org.ethereum.beacon.discovery.pipeline.EnvelopeHandler;
 import org.ethereum.beacon.discovery.pipeline.Field;
 import org.ethereum.beacon.discovery.pipeline.HandlerUtil;
 import org.ethereum.beacon.discovery.schema.NodeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Resolves session using `nonceRepository` for `WHOAREYOU` packets which should be placed in {@link
  * Field#PACKET_WHOAREYOU}
  */
 public class WhoAreYouSessionResolver implements EnvelopeHandler {
-  private static final Logger LOG = LogManager.getLogger(WhoAreYouSessionResolver.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WhoAreYouSessionResolver.class);
   private final NodeSessionManager nodeSessionManager;
 
   public WhoAreYouSessionResolver(NodeSessionManager nodeSessionManager) {
@@ -38,10 +38,8 @@ public class WhoAreYouSessionResolver implements EnvelopeHandler {
     }
 
     LOG.trace(
-        () ->
-            String.format(
-                "Envelope %s in WhoAreYouSessionResolver, requirements are satisfied!",
-                envelope.getIdString()));
+        "Envelope {} in WhoAreYouSessionResolver, requirements are satisfied!",
+        envelope.getIdString());
 
     WhoAreYouPacket whoAreYouPacket = (WhoAreYouPacket) packet;
     Optional<NodeSession> nodeSessionMaybe =

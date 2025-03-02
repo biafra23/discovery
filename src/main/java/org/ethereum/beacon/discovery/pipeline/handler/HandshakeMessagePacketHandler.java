@@ -7,8 +7,6 @@ package org.ethereum.beacon.discovery.pipeline.handler;
 import static org.ethereum.beacon.discovery.schema.NodeSession.SessionState.AUTHENTICATED;
 
 import java.util.Optional;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.ethereum.beacon.discovery.AddressAccessPolicy;
 import org.ethereum.beacon.discovery.message.V5Message;
@@ -25,10 +23,12 @@ import org.ethereum.beacon.discovery.schema.NodeRecordFactory;
 import org.ethereum.beacon.discovery.schema.NodeSession;
 import org.ethereum.beacon.discovery.type.Bytes16;
 import org.ethereum.beacon.discovery.util.Functions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Handles {@link HandshakeMessagePacket} in {@link Field#PACKET_HANDSHAKE} field */
 public class HandshakeMessagePacketHandler implements EnvelopeHandler {
-  private static final Logger LOG = LogManager.getLogger(HandshakeMessagePacketHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(HandshakeMessagePacketHandler.class);
   private final Pipeline outgoingPipeline;
   private final Scheduler scheduler;
   private final NodeRecordFactory nodeRecordFactory;
@@ -60,10 +60,8 @@ public class HandshakeMessagePacketHandler implements EnvelopeHandler {
       return;
     }
     LOG.trace(
-        () ->
-            String.format(
-                "Envelope %s in HandshakeMessagePacketHandler, requirements are satisfied!",
-                envelope.getIdString()));
+        "Envelope {} in HandshakeMessagePacketHandler, requirements are satisfied!",
+        envelope.getIdString());
 
     HandshakeMessagePacket packet = envelope.get(Field.PACKET_HANDSHAKE);
     NodeSession session = envelope.get(Field.SESSION);

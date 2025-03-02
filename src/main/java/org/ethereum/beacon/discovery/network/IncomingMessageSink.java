@@ -6,10 +6,10 @@ package org.ethereum.beacon.discovery.network;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.ethereum.beacon.discovery.pipeline.Envelope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.FluxSink;
 
 /**
@@ -18,7 +18,7 @@ import reactor.core.publisher.FluxSink;
  * could be later linked to processor to form incoming messages stream
  */
 public class IncomingMessageSink extends SimpleChannelInboundHandler<Envelope> {
-  private static final Logger LOG = LogManager.getLogger(IncomingMessageSink.class);
+  private static final Logger LOG = LoggerFactory.getLogger(IncomingMessageSink.class);
   private final FluxSink<Envelope> messageSink;
 
   public IncomingMessageSink(FluxSink<Envelope> messageSink) {
@@ -27,7 +27,7 @@ public class IncomingMessageSink extends SimpleChannelInboundHandler<Envelope> {
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, Envelope msg) {
-    LOG.trace(() -> String.format("Incoming packet %s in session %s", msg, ctx));
+    LOG.trace("Incoming packet {} in session {}", msg, ctx);
     messageSink.next(msg);
   }
 

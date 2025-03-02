@@ -19,8 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.crypto.SECP256K1.SecretKey;
@@ -43,13 +41,15 @@ import org.ethereum.beacon.discovery.storage.KBuckets;
 import org.ethereum.beacon.discovery.storage.LocalNodeRecordStore;
 import org.ethereum.beacon.discovery.type.Bytes12;
 import org.ethereum.beacon.discovery.type.Bytes16;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Stores session status and all keys for discovery message exchange between us, `homeNode` and the
  * other `node`
  */
 public class NodeSession {
-  private static final Logger LOG = LogManager.getLogger(NodeSession.class);
+  private static final Logger LOG = LoggerFactory.getLogger(NodeSession.class);
 
   public static final int REQUEST_ID_SIZE = 8;
   private final Bytes32 homeNodeId;
@@ -143,7 +143,7 @@ public class NodeSession {
   }
 
   public void sendOutgoingOrdinary(final V5Message message) {
-    LOG.trace(() -> String.format("Sending outgoing message %s in session %s", message, this));
+    LOG.trace("Sending outgoing message {} in session {}", message, this);
     Bytes16 maskingIV = generateMaskingIV();
     Header<OrdinaryAuthData> header =
         Header.createOrdinaryHeader(getHomeNodeId(), Bytes12.wrap(generateNonce()));
@@ -156,14 +156,12 @@ public class NodeSession {
     Header<OrdinaryAuthData> header =
         Header.createOrdinaryHeader(getHomeNodeId(), Bytes12.wrap(generateNonce()));
     OrdinaryMessagePacket packet = OrdinaryMessagePacket.createRandom(header, randomData);
-    LOG.trace(
-        () -> String.format("Sending outgoing Random message %s in session %s", packet, this));
+    LOG.trace("Sending outgoing Random message {} in session {}", packet, this);
     sendOutgoing(generateMaskingIV(), packet);
   }
 
   public void sendOutgoingWhoAreYou(final WhoAreYouPacket packet) {
-    LOG.trace(
-        () -> String.format("Sending outgoing WhoAreYou message %s in session %s", packet, this));
+    LOG.trace("Sending outgoing WhoAreYou message {} in session {}", packet, this);
     Bytes16 maskingIV = generateMaskingIV();
     whoAreYouChallenge = Optional.of(Bytes.wrap(maskingIV, packet.getHeader().getBytes()));
     sendOutgoing(maskingIV, packet);
@@ -171,10 +169,7 @@ public class NodeSession {
 
   public void sendOutgoingHandshake(
       final Header<HandshakeAuthData> header, final V5Message message) {
-    LOG.trace(
-        () ->
-            String.format(
-                "Sending outgoing Handshake message %s, %s in session %s", header, message, this));
+    LOG.trace("Sending outgoing Handshake message {}, {} in session {}", header, message, this);
     Bytes16 maskingIV = generateMaskingIV();
     HandshakeMessagePacket handshakeMessagePacket =
         HandshakeMessagePacket.create(maskingIV, header, message, getInitiatorKey());
@@ -216,10 +211,7 @@ public class NodeSession {
         wrappedId,
         () -> {
           LOG.trace(
-              () ->
-                  String.format(
-                      "Request %s expired for id %s in session %s: no reply",
-                      requestInfo, wrappedId, this));
+              "Request {} expired for id {} in session {}: no reply", requestInfo, wrappedId, this);
           requestIdStatuses.remove(wrappedId);
           resetHandshakeState();
         });
@@ -234,7 +226,7 @@ public class NodeSession {
 
   /** Updates request info. Thread-safe. */
   public synchronized void cancelAllRequests(final String message) {
-    LOG.debug(() -> String.format("Cancelling all requests in session %s", this));
+    LOG.debug("Cancelling all requests in session {}", this);
     final Set<Bytes> requestIdsCopy = new HashSet<>(requestIdStatuses.keySet());
     requestIdsCopy.forEach(
         requestId -> {
@@ -252,7 +244,7 @@ public class NodeSession {
               LOG.debug("Exception occurred clearing requests", e);
             }
           } else {
-            LOG.debug("Found an empty requestInfo for requestId {}", () -> requestId);
+            LOG.debug("Found an empty requestInfo for requestId {}", requestId);
           }
         });
   }
@@ -370,9 +362,7 @@ public class NodeSession {
   public synchronized void onNodeRecordReceived(final NodeRecord node) {
     if (node.getNodeId().equals(nodeId) && isUpdateRequired(node, nodeRecord)) {
       LOG.trace(
-          () ->
-              String.format(
-                  "NodeRecord updated from %s to %s in session %s", nodeRecord, node, this));
+          String.format("NodeRecord updated from %s to %s in session %s", nodeRecord, node, this));
       nodeRecord = Optional.of(node);
     }
     nodeBucketStorage.offer(node);
@@ -394,8 +384,7 @@ public class NodeSession {
   }
 
   public synchronized void setState(final SessionState newStatus) {
-    LOG.trace(
-        () -> String.format("Switching status of node %s from %s to %s", nodeId, state, newStatus));
+    LOG.trace(String.format("Switching status of node %s from %s to %s", nodeId, state, newStatus));
     this.state = newStatus;
   }
 

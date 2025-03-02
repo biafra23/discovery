@@ -9,14 +9,14 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
 import java.util.Optional;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.ethereum.beacon.discovery.message.PongMessage;
 import org.ethereum.beacon.discovery.schema.NodeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PongHandler implements MessageHandler<PongMessage> {
-  private static final Logger LOG = LogManager.getLogger();
+  private static final Logger LOG = LoggerFactory.getLogger(PongHandler.class);
   private final ExternalAddressSelector externalAddressSelector;
   private final EnrUpdateTracker enrUpdateTracker;
 
@@ -29,6 +29,8 @@ public class PongHandler implements MessageHandler<PongMessage> {
 
   @Override
   public void handle(PongMessage message, NodeSession session) {
+    LOG.error("handle kein ERROR .....");
+
     final Optional<InetSocketAddress> currentAddress = session.getReportedExternalAddress();
     if (currentAddress.isEmpty() || addressDiffers(message, currentAddress.orElseThrow())) {
       try {

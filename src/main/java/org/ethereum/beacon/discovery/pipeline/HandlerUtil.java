@@ -5,21 +5,20 @@
 package org.ethereum.beacon.discovery.pipeline;
 
 import java.util.function.Function;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HandlerUtil {
-  private static final Logger LOG = LogManager.getLogger(HandlerUtil.class);
+  private static final Logger LOG = LoggerFactory.getLogger(HandlerUtil.class);
 
   public static boolean requireField(Field<?> field, Envelope envelope) {
     if (envelope.contains(field)) {
       return true;
     } else {
       LOG.trace(
-          () ->
-              String.format(
-                  "Requirement not satisfied: field %s not exists in envelope %s",
-                  field, envelope.getIdString()));
+          "Requirement not satisfied: field {} not exists in envelope {}",
+          field,
+          envelope.getIdString());
       return false;
     }
   }
@@ -30,10 +29,7 @@ public class HandlerUtil {
     }
     if (envelope.get(Field.SESSION).getNodeRecord().isEmpty()) {
       LOG.trace(
-          () ->
-              String.format(
-                  "Requirement not satisfied: node record unknown in envelope %s",
-                  envelope.getIdString()));
+          "Requirement not satisfied: node record unknown in envelope {}", envelope.getIdString());
       return false;
     }
     return true;
@@ -45,10 +41,9 @@ public class HandlerUtil {
       return true;
     } else {
       LOG.trace(
-          () ->
-              String.format(
-                  "Requirement not satisfied: condition %s not met for envelope %s",
-                  conditionFunction, envelope.getIdString()));
+          "Requirement not satisfied: condition {} not met for envelope {}",
+          conditionFunction,
+          envelope.getIdString());
       return false;
     }
   }

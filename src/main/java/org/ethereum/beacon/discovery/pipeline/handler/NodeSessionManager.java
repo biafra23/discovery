@@ -15,8 +15,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.crypto.SECP256K1.SecretKey;
 import org.ethereum.beacon.discovery.pipeline.Envelope;
@@ -32,6 +30,8 @@ import org.ethereum.beacon.discovery.storage.KBuckets;
 import org.ethereum.beacon.discovery.storage.LocalNodeRecordStore;
 import org.ethereum.beacon.discovery.type.Bytes12;
 import org.ethereum.beacon.discovery.util.Functions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Performs {@link Field#SESSION_LOOKUP} request. Looks up for Node session based on NodeId, which
@@ -40,7 +40,7 @@ import org.ethereum.beacon.discovery.util.Functions;
 public class NodeSessionManager implements EnvelopeHandler {
   private static final int SESSION_CLEANUP_DELAY_SECONDS = 180;
   private static final int REQUEST_CLEANUP_DELAY_SECONDS = 60;
-  private static final Logger LOG = LogManager.getLogger(NodeSessionManager.class);
+  private static final Logger LOG = LoggerFactory.getLogger(NodeSessionManager.class);
   private final LocalNodeRecordStore localNodeRecordStore;
   private final SecretKey staticNodeKey;
   private final KBuckets nodeBucketStorage;

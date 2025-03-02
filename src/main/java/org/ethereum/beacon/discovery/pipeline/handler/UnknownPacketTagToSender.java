@@ -4,8 +4,6 @@
 
 package org.ethereum.beacon.discovery.pipeline.handler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes32;
 import org.ethereum.beacon.discovery.packet.HandshakeMessagePacket;
 import org.ethereum.beacon.discovery.packet.OrdinaryMessagePacket;
@@ -14,6 +12,8 @@ import org.ethereum.beacon.discovery.pipeline.Envelope;
 import org.ethereum.beacon.discovery.pipeline.EnvelopeHandler;
 import org.ethereum.beacon.discovery.pipeline.Field;
 import org.ethereum.beacon.discovery.pipeline.HandlerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Assuming we have some unknown packet in {@link Field#PACKET}, resolves sender node id using `tag`
@@ -21,7 +21,7 @@ import org.ethereum.beacon.discovery.pipeline.HandlerUtil;
  * resolved by another handler.
  */
 public class UnknownPacketTagToSender implements EnvelopeHandler {
-  private static final Logger LOG = LogManager.getLogger(UnknownPacketTagToSender.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UnknownPacketTagToSender.class);
 
   @Override
   public void handle(Envelope envelope) {
@@ -33,10 +33,8 @@ public class UnknownPacketTagToSender implements EnvelopeHandler {
     }
 
     LOG.trace(
-        () ->
-            String.format(
-                "Envelope %s in UnknownPacketTagToSender, requirements are satisfied!",
-                envelope.getIdString()));
+        "Envelope {} in UnknownPacketTagToSender, requirements are satisfied!",
+        envelope.getIdString());
 
     Packet<?> packet = envelope.get(Field.PACKET);
     Bytes32 nodeId;

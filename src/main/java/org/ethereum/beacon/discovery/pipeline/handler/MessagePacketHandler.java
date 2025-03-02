@@ -4,8 +4,6 @@
 
 package org.ethereum.beacon.discovery.pipeline.handler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ethereum.beacon.discovery.message.V5Message;
 import org.ethereum.beacon.discovery.packet.MessagePacket;
 import org.ethereum.beacon.discovery.packet.OrdinaryMessagePacket;
@@ -17,10 +15,12 @@ import org.ethereum.beacon.discovery.schema.NodeRecordFactory;
 import org.ethereum.beacon.discovery.schema.NodeSession;
 import org.ethereum.beacon.discovery.type.Bytes16;
 import org.ethereum.beacon.discovery.util.DecryptException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Handles {@link MessagePacket} in {@link Field#PACKET_MESSAGE} field */
 public class MessagePacketHandler implements EnvelopeHandler {
-  private static final Logger LOG = LogManager.getLogger(MessagePacketHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MessagePacketHandler.class);
   private final NodeRecordFactory nodeRecordFactory;
 
   public MessagePacketHandler(NodeRecordFactory nodeRecordFactory) {
@@ -39,10 +39,7 @@ public class MessagePacketHandler implements EnvelopeHandler {
       return;
     }
     LOG.trace(
-        () ->
-            String.format(
-                "Envelope %s in MessagePacketHandler, requirements are satisfied!",
-                envelope.getIdString()));
+        "Envelope {} in MessagePacketHandler, requirements are satisfied!", envelope.getIdString());
 
     MessagePacket<?> packet = envelope.get(Field.PACKET_MESSAGE);
     NodeSession session = envelope.get(Field.SESSION);
@@ -55,10 +52,10 @@ public class MessagePacketHandler implements EnvelopeHandler {
       envelope.remove(Field.PACKET_MESSAGE);
     } catch (DecryptException e) {
       LOG.trace(
-          () ->
-              String.format(
-                  "Failed to decrypt message [%s] from node %s in status %s. Will be sending WHOAREYOU...",
-                  packet, session.getNodeRecord(), session.getState()));
+          "Failed to decrypt message [{}] from node {} in status {}. Will be sending WHOAREYOU...",
+          packet,
+          session.getNodeRecord(),
+          session.getState());
 
       envelope.remove(Field.PACKET_MESSAGE);
       if (packet instanceof OrdinaryMessagePacket) {

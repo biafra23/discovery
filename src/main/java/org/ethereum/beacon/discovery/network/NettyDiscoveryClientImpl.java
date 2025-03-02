@@ -10,15 +10,15 @@ import io.netty.channel.socket.InternetProtocolFamily;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import java.net.InetSocketAddress;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 
 /** Netty discovery UDP client */
 public class NettyDiscoveryClientImpl implements DiscoveryClient {
-  private static final Logger LOG = LogManager.getLogger(NettyDiscoveryClientImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(NettyDiscoveryClientImpl.class);
 
   private final Map<InternetProtocolFamily, NioDatagramChannel> channels;
 
@@ -49,11 +49,10 @@ public class NettyDiscoveryClientImpl implements DiscoveryClient {
     final NioDatagramChannel channel =
         channels.get(InternetProtocolFamily.of(destination.getAddress()));
     if (channel == null) {
-      LOG.trace(
-          () -> String.format("Dropping packet %s because of IP version incompatibility", packet));
+      LOG.trace("Dropping packet {} because of IP version incompatibility", packet);
       return;
     }
-    LOG.trace(() -> String.format("Sending packet %s", packet));
+    LOG.trace("Sending packet {}", packet);
     channel.write(packet);
     channel.flush();
   }

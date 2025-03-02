@@ -16,8 +16,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.crypto.SECP256K1.SecretKey;
 import org.ethereum.beacon.discovery.message.FindNodeMessage;
@@ -59,12 +57,14 @@ import org.ethereum.beacon.discovery.schema.NodeSession;
 import org.ethereum.beacon.discovery.storage.KBuckets;
 import org.ethereum.beacon.discovery.storage.LocalNodeRecordStore;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.ReplayProcessor;
 
 public class DiscoveryManagerImpl implements DiscoveryManager {
-  private static final Logger LOG = LogManager.getLogger();
+  private static final Logger LOG = LoggerFactory.getLogger(DiscoveryManagerImpl.class);
 
   private final ReplayProcessor<NetworkParcel> outgoingMessages = ReplayProcessor.cacheLast();
   private final List<NettyDiscoveryServer> discoveryServers;

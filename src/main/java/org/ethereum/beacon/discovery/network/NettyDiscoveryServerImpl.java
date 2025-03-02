@@ -17,16 +17,16 @@ import io.netty.handler.traffic.ChannelTrafficShapingHandler;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ethereum.beacon.discovery.pipeline.Envelope;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.ReplayProcessor;
 
 public class NettyDiscoveryServerImpl implements NettyDiscoveryServer {
 
-  private static final Logger LOG = LogManager.getLogger(NettyDiscoveryServerImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(NettyDiscoveryServerImpl.class);
   private static final int RECREATION_TIMEOUT = 5000;
 
   private final ReplayProcessor<Envelope> incomingPackets = ReplayProcessor.cacheLast();
@@ -39,6 +39,7 @@ public class NettyDiscoveryServerImpl implements NettyDiscoveryServer {
 
   public NettyDiscoveryServerImpl(
       final InetSocketAddress listenAddress, final int trafficReadLimit) {
+    LOG.error("NettyDiscoveryServerImpl()");
     this.listenAddress = listenAddress;
     this.trafficReadLimit = trafficReadLimit;
   }

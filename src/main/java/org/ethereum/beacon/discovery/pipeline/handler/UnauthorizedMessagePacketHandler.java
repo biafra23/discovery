@@ -4,8 +4,6 @@
 
 package org.ethereum.beacon.discovery.pipeline.handler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.units.bigints.UInt64;
 import org.ethereum.beacon.discovery.packet.Header;
 import org.ethereum.beacon.discovery.packet.OrdinaryMessagePacket;
@@ -21,10 +19,12 @@ import org.ethereum.beacon.discovery.schema.NodeSession.SessionState;
 import org.ethereum.beacon.discovery.type.Bytes12;
 import org.ethereum.beacon.discovery.type.Bytes16;
 import org.ethereum.beacon.discovery.util.Functions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UnauthorizedMessagePacketHandler implements EnvelopeHandler {
 
-  private static final Logger LOG = LogManager.getLogger(UnauthorizedMessagePacketHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UnauthorizedMessagePacketHandler.class);
 
   @Override
   public void handle(Envelope envelope) {
@@ -35,10 +35,9 @@ public class UnauthorizedMessagePacketHandler implements EnvelopeHandler {
       return;
     }
     LOG.trace(
-        () ->
-            String.format(
-                "Envelope %s in UnauthorizedMessagePacketHandler, requirements are satisfied!",
-                envelope.getIdString()));
+        String.format(
+            "Envelope %s in UnauthorizedMessagePacketHandler, requirements are satisfied!",
+            envelope.getIdString()));
 
     NodeSession session = envelope.get(Field.SESSION);
     OrdinaryMessagePacket unknownPacket = envelope.get(Field.UNAUTHORIZED_PACKET_MESSAGE);

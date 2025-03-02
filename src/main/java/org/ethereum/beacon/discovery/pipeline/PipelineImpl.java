@@ -10,15 +10,15 @@ import static org.ethereum.beacon.discovery.util.Utils.RECOVERABLE_ERRORS_PREDIC
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.ReplayProcessor;
 
 public class PipelineImpl implements Pipeline {
-  private static final Logger LOG = LogManager.getLogger();
+  private static final Logger LOG = LoggerFactory.getLogger(PipelineImpl.class);
 
   private final List<EnvelopeHandler> envelopeHandlers = new ArrayList<>();
   private final AtomicBoolean started = new AtomicBoolean(false);

@@ -10,15 +10,15 @@ import static java.util.Collections.singletonList;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ethereum.beacon.discovery.message.FindNodeMessage;
 import org.ethereum.beacon.discovery.message.NodesMessage;
 import org.ethereum.beacon.discovery.schema.NodeRecord;
 import org.ethereum.beacon.discovery.schema.NodeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FindNodeHandler implements MessageHandler<FindNodeMessage> {
-  private static final Logger LOG = LogManager.getLogger(FindNodeHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FindNodeHandler.class);
 
   /**
    * The maximum size of any packet is 1280 bytes. Implementations should not generate or process
@@ -51,10 +51,10 @@ public class FindNodeHandler implements MessageHandler<FindNodeMessage> {
         Lists.partition(nodeRecordInfos, MAX_NODES_PER_MESSAGE);
 
     LOG.trace(
-        () ->
-            String.format(
-                "Sending %s nodes in reply to request with distances %s in session %s",
-                nodeRecordInfos.size(), message.getDistances(), session));
+        "Sending {} nodes in reply to request with distances {} in session {}",
+        nodeRecordInfos.size(),
+        message.getDistances(),
+        session);
 
     List<List<NodeRecord>> nonEmptyNodeRecordsList =
         nodeRecordBatches.isEmpty() ? singletonList(emptyList()) : nodeRecordBatches;

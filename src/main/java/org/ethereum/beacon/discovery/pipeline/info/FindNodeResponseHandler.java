@@ -6,16 +6,16 @@ package org.ethereum.beacon.discovery.pipeline.info;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ethereum.beacon.discovery.AddressAccessPolicy;
 import org.ethereum.beacon.discovery.message.NodesMessage;
 import org.ethereum.beacon.discovery.schema.NodeRecord;
 import org.ethereum.beacon.discovery.schema.NodeSession;
 import org.ethereum.beacon.discovery.util.Functions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FindNodeResponseHandler implements MultiPacketResponseHandler<NodesMessage> {
-  private static final Logger LOG = LogManager.getLogger(FindNodeResponseHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FindNodeResponseHandler.class);
   private static final int NOT_SET = -1;
   private static final int MAX_TOTAL_PACKETS = 16;
   private final List<NodeRecord> foundNodes = new ArrayList<>();
@@ -50,10 +50,11 @@ public class FindNodeResponseHandler implements MultiPacketResponseHandler<Nodes
 
     // Parse node records
     LOG.trace(
-        () ->
-            String.format(
-                "Received %s node records in session %s. Packet %s/%s.",
-                message.getNodeRecords().size(), session, receivedPackets, message.getTotal()));
+        "Received {} node records in session {}. Packet {}/{}.",
+        message.getNodeRecords().size(),
+        session,
+        receivedPackets,
+        message.getTotal());
     message.getNodeRecords().stream()
         .filter(this::isValid)
         .filter(record -> hasCorrectDistance(session, record))

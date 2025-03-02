@@ -35,8 +35,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.crypto.SECP256K1.KeyPair;
 import org.apache.tuweni.rlp.RLPReader;
@@ -51,10 +49,12 @@ import org.ethereum.beacon.discovery.schema.NodeRecordFactory;
 import org.ethereum.beacon.discovery.util.Functions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DiscoveryIntegrationTest {
 
-  private static final Logger LOG = LogManager.getLogger();
+  private static final Logger LOG = LoggerFactory.getLogger(DiscoveryIntegrationTest.class);
   public static final String LOCALHOST = "127.0.0.1";
   public static final String LOCALHOST_IPV6 = "::1";
   public static final Duration RETRY_TIMEOUT = Duration.ofSeconds(30);

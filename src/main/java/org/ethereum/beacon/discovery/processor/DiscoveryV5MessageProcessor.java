@@ -6,8 +6,6 @@ package org.ethereum.beacon.discovery.processor;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ethereum.beacon.discovery.TalkHandler;
 import org.ethereum.beacon.discovery.message.DiscoveryV5MessageDecoder;
 import org.ethereum.beacon.discovery.message.MessageCode;
@@ -25,13 +23,15 @@ import org.ethereum.beacon.discovery.message.handler.TalkRespHandler;
 import org.ethereum.beacon.discovery.schema.DiscoveryProtocol;
 import org.ethereum.beacon.discovery.schema.NodeSession;
 import org.ethereum.beacon.discovery.storage.LocalNodeRecordStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link DiscoveryV5MessageDecoder} v5 messages processor. Uses several handlers, one for each type
  * of v5 message to handle appropriate message.
  */
 public class DiscoveryV5MessageProcessor implements DiscoveryMessageProcessor<V5Message> {
-  private static final Logger LOG = LogManager.getLogger(DiscoveryV5MessageProcessor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DiscoveryV5MessageProcessor.class);
 
   @SuppressWarnings({"rawtypes"})
   private final Map<MessageCode, MessageHandler> messageHandlers = new HashMap<>();
@@ -62,7 +62,7 @@ public class DiscoveryV5MessageProcessor implements DiscoveryMessageProcessor<V5
   public void handleMessage(V5Message message, NodeSession session) {
     MessageCode code = message.getCode();
     MessageHandler messageHandler = messageHandlers.get(code);
-    LOG.trace(() -> String.format("Handling message %s in session %s", message, session));
+    LOG.trace("Handling message {} in session {}", message, session);
     if (messageHandler == null) {
       throw new RuntimeException("Not implemented yet");
     }

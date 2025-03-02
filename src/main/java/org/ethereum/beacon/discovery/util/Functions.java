@@ -13,8 +13,6 @@ import java.math.BigInteger;
 import java.nio.ByteOrder;
 import java.security.SecureRandom;
 import java.util.Random;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.crypto.Hash;
@@ -29,10 +27,12 @@ import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
 import org.bouncycastle.crypto.params.HKDFParameters;
 import org.bouncycastle.math.ec.ECPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Set of cryptography and utilities functions used in discovery */
 public class Functions {
-  private static final Logger LOG = LogManager.getLogger();
+  private static final Logger LOG = LoggerFactory.getLogger(Functions.class);
   public static final int PRIVKEY_SIZE = 32;
   public static final int PUBKEY_SIZE = 64;
   public static final int SIGNATURE_SIZE = 64;

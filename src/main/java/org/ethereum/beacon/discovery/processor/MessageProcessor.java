@@ -6,19 +6,19 @@ package org.ethereum.beacon.discovery.processor;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ethereum.beacon.discovery.message.DiscoveryMessageDecoder;
 import org.ethereum.beacon.discovery.message.Message;
 import org.ethereum.beacon.discovery.schema.DiscoveryProtocol;
 import org.ethereum.beacon.discovery.schema.NodeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Highest level processor which knows several processors for different versions of {@link
  * DiscoveryMessageDecoder}'s.
  */
 public class MessageProcessor {
-  private static final Logger LOG = LogManager.getLogger(MessageProcessor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MessageProcessor.class);
 
   @SuppressWarnings({"rawtypes"})
   private final Map<DiscoveryProtocol, DiscoveryMessageProcessor> messageProcessors =

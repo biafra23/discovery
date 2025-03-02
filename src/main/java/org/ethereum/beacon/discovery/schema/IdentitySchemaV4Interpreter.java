@@ -22,17 +22,17 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.crypto.SECP256K1.SecretKey;
 import org.bouncycastle.math.ec.ECPoint;
 import org.ethereum.beacon.discovery.util.Functions;
 import org.ethereum.beacon.discovery.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IdentitySchemaV4Interpreter implements IdentitySchemaInterpreter {
 
-  private static final Logger LOG = LogManager.getLogger();
+  private static final Logger LOG = LoggerFactory.getLogger(IdentitySchemaV4Interpreter.class);
 
   private final LoadingCache<Bytes, Bytes> nodeIdCache =
       CacheBuilder.newBuilder()

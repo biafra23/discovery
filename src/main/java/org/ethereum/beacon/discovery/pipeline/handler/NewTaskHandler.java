@@ -4,18 +4,18 @@
 
 package org.ethereum.beacon.discovery.pipeline.handler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ethereum.beacon.discovery.pipeline.Envelope;
 import org.ethereum.beacon.discovery.pipeline.EnvelopeHandler;
 import org.ethereum.beacon.discovery.pipeline.Field;
 import org.ethereum.beacon.discovery.pipeline.HandlerUtil;
 import org.ethereum.beacon.discovery.pipeline.info.Request;
 import org.ethereum.beacon.discovery.schema.NodeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Enqueues task in session for any task found in {@link Field#REQUEST} */
 public class NewTaskHandler implements EnvelopeHandler {
-  private static final Logger LOG = LogManager.getLogger(NewTaskHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(NewTaskHandler.class);
 
   @Override
   @SuppressWarnings("rawtypes")
@@ -27,10 +27,8 @@ public class NewTaskHandler implements EnvelopeHandler {
       return;
     }
     LOG.trace(
-        () ->
-            String.format(
-                "Envelope %s in NewTaskHandler, requirements are satisfied!",
-                envelope.getIdString()));
+        String.format(
+            "Envelope %s in NewTaskHandler, requirements are satisfied!", envelope.getIdString()));
 
     Request request = envelope.get(Field.REQUEST);
     NodeSession session = envelope.get(Field.SESSION);

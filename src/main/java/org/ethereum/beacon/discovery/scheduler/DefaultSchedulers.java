@@ -9,12 +9,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultSchedulers extends AbstractSchedulers {
 
-  private static final Logger LOG = LogManager.getLogger(DefaultSchedulers.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultSchedulers.class);
 
   private Consumer<Throwable> errorHandler = t -> LOG.error("Unhandled exception:", t);
   private volatile boolean started;
