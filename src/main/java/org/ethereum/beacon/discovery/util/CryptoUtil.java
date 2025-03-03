@@ -9,6 +9,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -19,6 +20,8 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import static javax.crypto.Cipher.DECRYPT_MODE;
 
 public class CryptoUtil {
 
@@ -59,16 +62,17 @@ public class CryptoUtil {
 
   public static Cipher createAesctrDecryptor(Bytes key, Bytes iv) {
     try {
-      Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
+      Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding", "AndroidOpenSSL");
       cipher.init(
-          Cipher.DECRYPT_MODE,
+          DECRYPT_MODE,
           new SecretKeySpec(key.toArrayUnsafe(), "AES"),
           new IvParameterSpec(iv.toArrayUnsafe()));
       return cipher;
     } catch (NoSuchAlgorithmException
         | NoSuchPaddingException
         | InvalidKeyException
-        | InvalidAlgorithmParameterException e) {
+        | InvalidAlgorithmParameterException
+        | NoSuchProviderException e) {
       throw new RuntimeException("Unexpected crypto setup problem", e);
     }
   }
@@ -104,7 +108,7 @@ public class CryptoUtil {
     try {
       Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
       cipher.init(
-          Cipher.DECRYPT_MODE,
+          DECRYPT_MODE,
           new SecretKeySpec(privateKey.toArray(), "AES"),
           new GCMParameterSpec(128, nonce.toArray()));
       cipher.updateAAD(aad.toArray());
