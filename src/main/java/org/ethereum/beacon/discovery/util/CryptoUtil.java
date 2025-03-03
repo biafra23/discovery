@@ -4,12 +4,13 @@
 
 package org.ethereum.beacon.discovery.util;
 
+import static javax.crypto.Cipher.DECRYPT_MODE;
+
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -20,8 +21,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import static javax.crypto.Cipher.DECRYPT_MODE;
 
 public class CryptoUtil {
 
@@ -62,7 +61,7 @@ public class CryptoUtil {
 
   public static Cipher createAesctrDecryptor(Bytes key, Bytes iv) {
     try {
-      Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding", "AndroidOpenSSL");
+      Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
       cipher.init(
           DECRYPT_MODE,
           new SecretKeySpec(key.toArrayUnsafe(), "AES"),
@@ -71,8 +70,7 @@ public class CryptoUtil {
     } catch (NoSuchAlgorithmException
         | NoSuchPaddingException
         | InvalidKeyException
-        | InvalidAlgorithmParameterException
-        | NoSuchProviderException e) {
+        | InvalidAlgorithmParameterException e) {
       throw new RuntimeException("Unexpected crypto setup problem", e);
     }
   }
