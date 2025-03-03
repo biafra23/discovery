@@ -19,17 +19,25 @@ import org.ethereum.beacon.discovery.type.Bytes16;
 import org.ethereum.beacon.discovery.util.CryptoUtil;
 import org.ethereum.beacon.discovery.util.DecodeException;
 import org.ethereum.beacon.discovery.util.DecryptException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HeaderImpl<TAuthData extends AuthData> extends AbstractBytes
     implements Header<TAuthData> {
+
+  static final Logger LOG = LoggerFactory.getLogger(HeaderImpl.class);
 
   public static Header<?> decrypt(Bytes data, Bytes16 iv, Bytes16 destNodeId)
       throws DecodeException {
     try {
       checkMinSize(data, StaticHeaderImpl.STATIC_HEADER_SIZE);
+      LOG.warn("FORK: after checkMinSize");
       Cipher cipher = CryptoUtil.createAesctrDecryptor(destNodeId, iv);
+      LOG.warn("FORK: cipher: " + cipher);
       Bytes staticHeaderCiphered = data.slice(0, StaticHeaderImpl.STATIC_HEADER_SIZE);
+      LOG.warn("FORK: before decode: staticHeaderCiphered.size: {}", staticHeaderCiphered.size());
       Bytes staticHeaderBytes = Bytes.wrap(cipher.update(staticHeaderCiphered.toArrayUnsafe()));
+      LOG.warn("FORK: before decode: staticHeaderBytes.size: {}", staticHeaderBytes.size());
       StaticHeader header = StaticHeader.decode(staticHeaderBytes);
       header.validate();
 
