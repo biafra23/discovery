@@ -34,6 +34,10 @@ public class HeaderImpl<TAuthData extends AuthData> extends AbstractBytes
       LOG.warn("FORK: after checkMinSize");
       Cipher cipher = CryptoUtil.createAesctrDecryptor(destNodeId, iv);
       LOG.warn("FORK: cipher: " + cipher);
+      LOG.warn("FORK: cipher.provider: " + cipher.getProvider());
+      LOG.warn("FORK: cipher.algorithm: " + cipher.getAlgorithm());
+      LOG.warn("FORK: cipher.blocksize: " + cipher.getBlockSize());
+      LOG.warn("FORK: cipher.parameters: " + cipher.getParameters());
       Bytes staticHeaderCiphered = data.slice(0, StaticHeaderImpl.STATIC_HEADER_SIZE);
       LOG.warn("FORK: before decode: staticHeaderCiphered.size: {}", staticHeaderCiphered.size());
       Bytes staticHeaderBytes = Bytes.wrap(cipher.update(staticHeaderCiphered.toArrayUnsafe()));
