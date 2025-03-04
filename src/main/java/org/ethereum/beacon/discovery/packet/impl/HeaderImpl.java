@@ -25,23 +25,23 @@ import org.slf4j.LoggerFactory;
 public class HeaderImpl<TAuthData extends AuthData> extends AbstractBytes
     implements Header<TAuthData> {
 
-  static final Logger LOG = LoggerFactory.getLogger(HeaderImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(HeaderImpl.class);
 
   public static Header<?> decrypt(Bytes data, Bytes16 iv, Bytes16 destNodeId)
       throws DecodeException {
     try {
       checkMinSize(data, StaticHeaderImpl.STATIC_HEADER_SIZE);
-      LOG.warn("FORK: after checkMinSize");
+      LOG.debug("FORK: after checkMinSize");
       Cipher cipher = CryptoUtil.createAesctrDecryptor(destNodeId, iv);
-      LOG.warn("FORK: cipher: " + cipher);
-      LOG.warn("FORK: cipher.provider: " + cipher.getProvider());
-      LOG.warn("FORK: cipher.algorithm: " + cipher.getAlgorithm());
-      LOG.warn("FORK: cipher.blocksize: " + cipher.getBlockSize());
-      LOG.warn("FORK: cipher.parameters: " + cipher.getParameters());
+      LOG.debug("FORK: cipher: " + cipher);
+      LOG.debug("FORK: cipher.provider: " + cipher.getProvider());
+      LOG.debug("FORK: cipher.algorithm: " + cipher.getAlgorithm());
+      LOG.debug("FORK: cipher.blocksize: " + cipher.getBlockSize());
+      LOG.debug("FORK: cipher.parameters: " + cipher.getParameters());
       Bytes staticHeaderCiphered = data.slice(0, StaticHeaderImpl.STATIC_HEADER_SIZE);
-      LOG.warn("FORK: before decode: staticHeaderCiphered.size: {}", staticHeaderCiphered.size());
+      LOG.debug("FORK: before decode: staticHeaderCiphered.size: {}", staticHeaderCiphered.size());
       Bytes staticHeaderBytes = Bytes.wrap(cipher.update(staticHeaderCiphered.toArrayUnsafe()));
-      LOG.warn("FORK: before decode: staticHeaderBytes.size: {}", staticHeaderBytes.size());
+      LOG.debug("FORK: before decode: staticHeaderBytes.size: {}", staticHeaderBytes.size());
       StaticHeader header = StaticHeader.decode(staticHeaderBytes);
       header.validate();
 

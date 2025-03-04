@@ -20,7 +20,7 @@ public abstract class AbstractBytes implements BytesSerializable {
       throw new DecodeException(
           "FORK: Data size (" + bytes.size() + ") doesn't match expected: " + expectedSize);
     }
-    LOG.warn("FORK: bytes.size(): (" + bytes.size() + ") == expectedSize: (" + expectedSize + ")");
+    LOG.debug("FORK: bytes.size(): (" + bytes.size() + ") == expectedSize: (" + expectedSize + ")");
     return bytes;
   }
 
@@ -29,7 +29,7 @@ public abstract class AbstractBytes implements BytesSerializable {
       throw new DecodeException(
           "Data is too small: " + bytes.size() + ", (expected at least " + minimalSize + " bytes)");
     }
-    LOG.warn("FORK: {} >= {}", bytes.size(), minimalSize);
+    LOG.debug("FORK: {} >= {}", bytes.size(), minimalSize);
     return bytes;
   }
 
