@@ -29,8 +29,6 @@ public class PongHandler implements MessageHandler<PongMessage> {
 
   @Override
   public void handle(PongMessage message, NodeSession session) {
-    LOG.error("handle kein ERROR .....");
-
     final Optional<InetSocketAddress> currentAddress = session.getReportedExternalAddress();
     if (currentAddress.isEmpty() || addressDiffers(message, currentAddress.orElseThrow())) {
       try {

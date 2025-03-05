@@ -20,12 +20,10 @@ public class PingHandler implements MessageHandler<PingMessage> {
 
   public PingHandler(final EnrUpdateTracker enrUpdateTracker) {
     this.enrUpdateTracker = enrUpdateTracker;
-    LOG.error("PingHandler kein ERROR .....");
   }
 
   @Override
   public void handle(PingMessage message, NodeSession session) {
-    LOG.error("handle kein ERROR .....");
 
     final NodeRecord nodeRecord = session.getHomeNodeRecord();
     final InetSocketAddress remoteAddress = session.getRemoteAddress();
