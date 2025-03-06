@@ -31,17 +31,9 @@ public class HeaderImpl<TAuthData extends AuthData> extends AbstractBytes
       throws DecodeException {
     try {
       checkMinSize(data, StaticHeaderImpl.STATIC_HEADER_SIZE);
-      LOG.debug("FORK: after checkMinSize");
       Cipher cipher = CryptoUtil.createAesctrDecryptor(destNodeId, iv);
-      LOG.debug("FORK: cipher: " + cipher);
-      LOG.debug("FORK: cipher.provider: " + cipher.getProvider());
-      LOG.debug("FORK: cipher.algorithm: " + cipher.getAlgorithm());
-      LOG.debug("FORK: cipher.blocksize: " + cipher.getBlockSize());
-      LOG.debug("FORK: cipher.parameters: " + cipher.getParameters());
       Bytes staticHeaderCiphered = data.slice(0, StaticHeaderImpl.STATIC_HEADER_SIZE);
-      LOG.debug("FORK: before decode: staticHeaderCiphered.size: {}", staticHeaderCiphered.size());
       Bytes staticHeaderBytes = Bytes.wrap(cipher.update(staticHeaderCiphered.toArrayUnsafe()));
-      LOG.debug("FORK: before decode: staticHeaderBytes.size: {}", staticHeaderBytes.size());
       StaticHeader header = StaticHeader.decode(staticHeaderBytes);
       header.validate();
 
