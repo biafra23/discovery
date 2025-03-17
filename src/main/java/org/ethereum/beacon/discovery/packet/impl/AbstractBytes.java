@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractBytes implements BytesSerializable {
 
   private final Bytes bytes;
-  private static final Logger LOG = LoggerFactory.getLogger(AbstractBytes.class);
+//  private static final Logger LOG = LoggerFactory.getLogger(AbstractBytes.class);
 
   public static Bytes checkStrictSize(Bytes bytes, int expectedSize) throws DecodeException {
     if (bytes.size() != expectedSize) {
