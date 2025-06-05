@@ -7,20 +7,20 @@ import java.util.Objects;
 import org.apache.tuweni.bytes.Bytes;
 import org.ethereum.beacon.discovery.packet.BytesSerializable;
 import org.ethereum.beacon.discovery.util.DecodeException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBytes implements BytesSerializable {
 
   private final Bytes bytes;
-//  private static final Logger LOG = LoggerFactory.getLogger(AbstractBytes.class);
+
+  //  private static final Logger LOG = LoggerFactory.getLogger(AbstractBytes.class);
 
   public static Bytes checkStrictSize(Bytes bytes, int expectedSize) throws DecodeException {
     if (bytes.size() != expectedSize) {
       throw new DecodeException(
           "FORK: Data size (" + bytes.size() + ") doesn't match expected: " + expectedSize);
     }
-//    LOG.debug("FORK: bytes.size(): (" + bytes.size() + ") == expectedSize: (" + expectedSize + ")");
+    //    LOG.debug("FORK: bytes.size(): (" + bytes.size() + ") == expectedSize: (" + expectedSize +
+    // ")");
     return bytes;
   }
 
@@ -29,7 +29,7 @@ public abstract class AbstractBytes implements BytesSerializable {
       throw new DecodeException(
           "Data is too small: " + bytes.size() + ", (expected at least " + minimalSize + " bytes)");
     }
-//    LOG.debug("FORK: {} >= {}", bytes.size(), minimalSize);
+    //    LOG.debug("FORK: {} >= {}", bytes.size(), minimalSize);
     return bytes;
   }
 
