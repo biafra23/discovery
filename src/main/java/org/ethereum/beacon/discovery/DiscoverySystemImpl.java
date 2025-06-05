@@ -19,7 +19,7 @@ import org.ethereum.beacon.discovery.storage.KBuckets;
 import org.ethereum.beacon.discovery.task.DiscoveryTaskManager;
 
 public class DiscoverySystemImpl implements DiscoverySystem, MutableDiscoverySystem {
-  private static final Logger LOG = LogManager.getLogger();
+  private static final Logger LOG = LogManager.getLogger(DiscoverySystemImpl.class);
   private final DiscoveryManager discoveryManager;
   private final DiscoveryTaskManager taskManager;
   private final ExpirationSchedulerFactory expirationSchedulerFactory;
