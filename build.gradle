@@ -17,8 +17,8 @@ apply from: "${rootDir}/gradle/versions.gradle"
 apply from: "${rootDir}/gradle/check-licenses.gradle"
 defaultTasks 'build', 'checkLicenses'
 
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
   mavenCentral()
@@ -188,7 +188,8 @@ publishing {
   publications {
     mavenJava(MavenPublication) {
       groupId "tech.pegasys.discovery"
-      version project.version
+      //version project.version
+      version "${project.version}-jvm17"
       from components.java
       artifact sourcesJar
 
