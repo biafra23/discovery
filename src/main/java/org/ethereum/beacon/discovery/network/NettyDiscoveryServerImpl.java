@@ -47,9 +47,13 @@ public class NettyDiscoveryServerImpl implements NettyDiscoveryServer {
   public CompletableFuture<NioDatagramChannel> start() {
     LOG.info("Starting discovery server listening on {}", listenAddress);
     if (!listen.compareAndSet(false, true)) {
-      return CompletableFuture.failedFuture(
+      // Android fork: CompletableFuture.failedFuture exists only from Android API 31 and is not
+      // covered by core-library desugaring — complete a fresh future exceptionally instead.
+      final CompletableFuture<NioDatagramChannel> alreadyStarted = new CompletableFuture<>();
+      alreadyStarted.completeExceptionally(
           new IllegalStateException(
               "Attempted to start an already started server listening on " + listenAddress));
+      return alreadyStarted;
     }
     nioGroup = new NioEventLoopGroup(1);
     return startServer(nioGroup);

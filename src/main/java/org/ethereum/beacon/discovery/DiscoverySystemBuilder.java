@@ -25,6 +25,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -336,6 +341,13 @@ public class DiscoverySystemBuilder {
    * calling {@link DiscoveryManager#ping(NodeRecord)} would.
    */
   private static final class AsyncPinger implements Pinger {
+    // Android fork: CompletableFuture.orTimeout exists only from Android API 31 and is not
+    // covered by core-library desugaring. orTimeout below reproduces its contract on a single
+    // shared daemon timer thread — the same shape as the JDK's internal Delayer: complete the
+    // SAME future exceptionally with TimeoutException when the timeout elapses, cancelling the
+    // timer task as soon as the future completes.
+    private static final ScheduledExecutorService PING_TIMEOUT_SCHEDULER = createTimeoutScheduler();
+
     private final Pinger delegate;
 
     private AsyncPinger(final Pinger delegate) {
@@ -344,8 +356,31 @@ public class DiscoverySystemBuilder {
 
     @Override
     public CompletableFuture<Void> ping(final NodeRecord node) {
-      return CompletableFuture.supplyAsync(() -> delegate.ping(node).orTimeout(500, MILLISECONDS))
+      return CompletableFuture.supplyAsync(() -> orTimeout(delegate.ping(node), 500, MILLISECONDS))
           .thenCompose(Function.identity());
+    }
+
+    private static ScheduledExecutorService createTimeoutScheduler() {
+      final ScheduledThreadPoolExecutor executor =
+          new ScheduledThreadPoolExecutor(
+              1,
+              new ThreadFactoryBuilder()
+                  .setNameFormat("discovery-ping-timeout")
+                  .setDaemon(true)
+                  .build());
+      executor.setRemoveOnCancelPolicy(true);
+      return executor;
+    }
+
+    private static <T> CompletableFuture<T> orTimeout(
+        final CompletableFuture<T> future, final long timeout, final TimeUnit unit) {
+      if (!future.isDone()) {
+        final ScheduledFuture<?> timer =
+            PING_TIMEOUT_SCHEDULER.schedule(
+                () -> future.completeExceptionally(new TimeoutException()), timeout, unit);
+        future.whenComplete((result, error) -> timer.cancel(false));
+      }
+      return future;
     }
   }
 }

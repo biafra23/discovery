@@ -44,7 +44,11 @@ public class RecursiveLookupTasks {
   public CompletableFuture<Collection<NodeRecord>> add(
       NodeRecord nodeRecord, List<Integer> distances) {
     if (!currentTasks.add(nodeRecord.getNodeId())) {
-      return CompletableFuture.failedFuture(new IllegalStateException("Already querying node"));
+      // Android fork: CompletableFuture.failedFuture exists only from Android API 31 and is not
+      // covered by core-library desugaring — complete a fresh future exceptionally instead.
+      final CompletableFuture<Collection<NodeRecord>> alreadyQuerying = new CompletableFuture<>();
+      alreadyQuerying.completeExceptionally(new IllegalStateException("Already querying node"));
+      return alreadyQuerying;
     }
 
     final CompletableFuture<Collection<NodeRecord>> result = new CompletableFuture<>();

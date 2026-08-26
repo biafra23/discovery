@@ -26,6 +26,10 @@ class KBucket {
    * <p>Thus the live nodes are at the start of the bucket with not yet confirmed nodes at the end,
    * and the last node in the list is the node least recently confirmed as live that should be the
    * next to check.
+   *
+   * <p>Android fork: the SequencedCollection methods List.addFirst/getLast exist only from Android
+   * API 35 and are not covered by core-library desugaring, so this class uses add(0, e) and
+   * get(size() - 1) instead (identical semantics on this always-non-empty-when-read ArrayList).
    */
   private final List<BucketEntry> nodes = new ArrayList<>();
 
@@ -55,7 +59,17 @@ class KBucket {
   }
 
   private Stream<BucketEntry> streamLiveEntries() {
-    return nodes.stream().takeWhile(BucketEntry::isLive);
+    // Android fork: Stream.takeWhile exists only from Android API 34 and is not covered by
+    // core-library desugaring, so collect the live prefix imperatively (buckets hold at most
+    // K == 16 entries).
+    final List<BucketEntry> liveEntries = new ArrayList<>();
+    for (final BucketEntry entry : nodes) {
+      if (!entry.isLive()) {
+        break;
+      }
+      liveEntries.add(entry);
+    }
+    return liveEntries.stream();
   }
 
   public Optional<NodeRecord> getPendingNode() {
@@ -85,7 +99,7 @@ class KBucket {
       return;
     }
     if (isFull()) {
-      nodes.getLast().checkLiveness(clock.millis());
+      nodes.get(nodes.size() - 1).checkLiveness(clock.millis());
       if (pendingNode.isEmpty()) {
         livenessChecker.checkLiveness(node);
       }
@@ -102,7 +116,7 @@ class KBucket {
             existingEntry -> {
               // Move to the start of the bucket
               nodes.remove(existingEntry);
-              nodes.addFirst(existingEntry.withLastConfirmedTime(clock.millis()));
+              nodes.add(0, existingEntry.withLastConfirmedTime(clock.millis()));
               performMaintenance();
             },
             () -> {
@@ -117,7 +131,7 @@ class KBucket {
                   pendingNode = Optional.of(new BucketEntry(livenessChecker, node, clock.millis()));
                 }
               } else {
-                nodes.addFirst(new BucketEntry(livenessChecker, node, clock.millis()));
+                nodes.add(0, new BucketEntry(livenessChecker, node, clock.millis()));
               }
             });
   }
@@ -147,12 +161,12 @@ class KBucket {
     if (nodes.isEmpty()) {
       return;
     }
-    final BucketEntry lastNode = nodes.getLast();
+    final BucketEntry lastNode = nodes.get(nodes.size() - 1);
     if (lastNode.hasFailedLivenessCheck(currentTime)) {
       nodes.remove(lastNode);
       pendingNode.ifPresent(
           pendingEntry -> {
-            nodes.addFirst(pendingEntry);
+            nodes.add(0, pendingEntry);
             pendingNode = Optional.empty();
           });
     } else {
@@ -201,7 +215,7 @@ class KBucket {
     performPendingNodeMaintenance();
     pendingNode.ifPresent(
         pendingEntry -> {
-          nodes.addFirst(pendingEntry);
+          nodes.add(0, pendingEntry);
           pendingNode = Optional.empty();
         });
   }
