@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.apache.tuweni.bytes.Bytes;
@@ -146,7 +147,10 @@ public class KBuckets {
   }
 
   public synchronized List<List<NodeRecord>> getNodeRecordBuckets() {
-    return buckets.values().stream().map(KBucket::getAllNodes).toList();
+    // Android fork: Stream.toList exists only from Android API 34 and D8 does not backport it —
+    // collect(Collectors.toList()) is the pre-API-29-safe equivalent (extra mutability of the
+    // returned list is unobservable to callers of this method).
+    return buckets.values().stream().map(KBucket::getAllNodes).collect(Collectors.toList());
   }
 
   public synchronized void deleteNode(final Bytes nodeId) {
